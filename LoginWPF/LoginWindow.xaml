@@ -1,0 +1,44 @@
+﻿<Window x:Class="LoginWPF.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:LoginWPF"
+        Title="LoginWindow" Height="150" Width="300">
+    <Window.DataContext>
+        <local:LoginViewModel/>
+    </Window.DataContext>
+    <StackPanel Orientation="Vertical">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="Логин"
+                   Target="{Binding ElementName=Input_Login}"
+                   Grid.Column="0"/>
+            <TextBox x:Name="Input_Login"
+                     Text="{Binding Path=Login, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     Grid.Column="1"/>
+        </Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="Пароль"
+                   Target="{Binding ElementName=Input_Password}"
+                   Grid.Column="0"/>
+            <TextBox x:Name="Input_Password"
+                     Text="{Binding Path=Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     Grid.Column="1"/>
+        </Grid>
+        <StackPanel Orientation="Horizontal">
+            <Button Content="Войти"
+                    Command="{Binding Path=LoginCommand}"/>
+            <Button Content="Зарегистрироваться"
+                    Command="{Binding Path=RegisterCommand}"/>
+        </StackPanel>
+        <StackPanel>
+            <TextBox Text="{Binding Path=Status, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        </StackPanel>
+    </StackPanel>
+</Window>
