@@ -59,8 +59,6 @@ public class LoginViewModel : INotifyPropertyChanged
             var response = await _httpClient.PostAsJsonAsync("/login", json);
             if (response.IsSuccessStatusCode)
             {
-                var responseBody = await response.Content.ReadAsStringAsync();
-                var user = JsonSerializer.Deserialize<Person>(responseBody);
                 var window = new MainWindow();
                 window.Show();
                 OnRequestClose();
@@ -85,8 +83,6 @@ public class LoginViewModel : INotifyPropertyChanged
             var response = await _httpClient.PostAsJsonAsync("/register", json);
             if (response.IsSuccessStatusCode)
             {
-                var responseBody = await response.Content.ReadAsStringAsync();
-                var newUser = JsonSerializer.Deserialize<Person>(responseBody);
                 var window = new MainWindow();
                 window.Show();
                 OnRequestClose();
