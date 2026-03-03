@@ -42,7 +42,9 @@ public class LoginViewModel : INotifyPropertyChanged
     {
         _httpClient = new HttpClient();
         _httpClient.BaseAddress = new Uri("http://localhost:5196");
-        _dataContext = new DataBaseContext(new DbContextOptions<DataBaseContext>());
+        var optionsBuilder = new DbContextOptionsBuilder<DataBaseContext>();
+        optionsBuilder.UseSqlite("Data Source=baza.sqlite3");
+        _dataContext = new DataBaseContext(optionsBuilder.Options);
         LoginCommand = new LambdaCommand(async _ => await LoginAsync(), _ => !string.IsNullOrEmpty(Login) && !string.IsNullOrEmpty(Password));
         RegisterCommand = new LambdaCommand(async _ => await RegisterAsync(), _ => !string.IsNullOrEmpty(Login) && !string.IsNullOrEmpty(Password));
     }
