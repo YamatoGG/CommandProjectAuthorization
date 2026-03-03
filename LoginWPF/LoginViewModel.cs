@@ -53,10 +53,9 @@ public class LoginViewModel : INotifyPropertyChanged
     {
         Status = null;
         var loginData = new Person() { Login = Login!, Password = Password! };
-        var json = JsonSerializer.Serialize(loginData);
         try
         {
-            var response = await _httpClient.PostAsJsonAsync("/login", json);
+            var response = await _httpClient.PostAsJsonAsync("/login", loginData);
             if (response.IsSuccessStatusCode)
             {
                 var window = new MainWindow();
@@ -77,10 +76,9 @@ public class LoginViewModel : INotifyPropertyChanged
     {
         Status = null;
         var loginData = new Person() { Login = Login!, Password = Password! };
-        var json = JsonSerializer.Serialize(loginData);
         try
         {
-            var response = await _httpClient.PostAsJsonAsync("/register", json);
+            var response = await _httpClient.PostAsJsonAsync("/register", loginData);
             if (response.IsSuccessStatusCode)
             {
                 var window = new MainWindow();
