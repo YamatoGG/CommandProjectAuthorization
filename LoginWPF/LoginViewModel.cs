@@ -1,5 +1,8 @@
 using System.ComponentModel;
+using System.Net.Http;
 using System.Runtime.CompilerServices;
+using System.Text;
+using System.Text.Json;
 using System.Windows.Input;
 using Microsoft.EntityFrameworkCore;
 using WebBaza;
@@ -9,6 +12,7 @@ namespace LoginWPF;
 
 public class LoginViewModel : INotifyPropertyChanged
 {
+    private HttpClient _httpClient;
     public event EventHandler RequestClose;
     private DataBaseContext _dataContext;
     public string? Login
@@ -35,6 +39,8 @@ public class LoginViewModel : INotifyPropertyChanged
     }
     public LoginViewModel()
     {
+        _httpClient = new HttpClient();
+        _httpClient.BaseAddress = new Uri("http://localhost:5196");
         _dataContext = new DataBaseContext(new DbContextOptions<DataBaseContext>());
         LoginCommand = new LambdaCommand(async _ => await LoginAsync(), _ => !string.IsNullOrEmpty(Login) && !string.IsNullOrEmpty(Password));
         RegisterCommand = new LambdaCommand(async _ => await RegisterAsync(), _ => !string.IsNullOrEmpty(Login) && !string.IsNullOrEmpty(Password));
@@ -43,43 +49,59 @@ public class LoginViewModel : INotifyPropertyChanged
     private async Task LoginAsync()
     {
         Status = null;
-        var user = await _dataContext.People.FirstOrDefaultAsync(u => u.Login == Login);
-        if (user != null && user.Password == Password)
+        var loginData = new { Login, Password };
+        var json = JsonSerializer.Serialize(loginData);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+        try
         {
-            var window = new MainWindow();
-            window.Show();
-            OnRequestClose();
+            var response = await _httpClient.PostAsync("/login", content);
+            if (response.IsSuccessStatusCode)
+            {
+                var responseBody = await response.Content.ReadAsStringAsync();
+                var user = JsonSerializer.Deserialize<Person>(responseBody);
+                var window = new MainWindow();
+                window.Show();
+                OnRequestClose();
+            }
+            else
+            {
+                Status = "Неверный логин или пароль";
+            }
         }
-        else
+        catch (Exception ex)
         {
-            Status = "Неверный логин или пароль";
+            Status = $"Ошибка: {ex.Message}";
         }
     }
     private async Task RegisterAsync()
     {
         Status = null;
-        if (await _dataContext.People.AnyAsync(u => u.Login == Login))
+        var loginData = new { Login, Password };
+        var json = JsonSerializer.Serialize(loginData);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+        try
         {
-            Status = "Этот логин уже занят";
-            return;
+            var response = await _httpClient.PostAsync("/register", content);
+            if (response.IsSuccessStatusCode)
+            {
+                var responseBody = await response.Content.ReadAsStringAsync();
+                var newUser = JsonSerializer.Deserialize<Person>(responseBody);
+                var window = new MainWindow();
+                window.Show();
+                OnRequestClose();
+            }
+            else
+            {
+                var errorMsg = await response.Content.ReadAsStringAsync();
+                Status = $"Ошибка регистрации: {errorMsg}";
+            }
         }
-        var rnd = new Random();
-        int newId;
-        do
+        catch (Exception ex)
         {
-            newId = rnd.Next();
-        } while (_dataContext.People.Any(u => u.Id == newId));
-        var newUser = new Person()
-        {
-            Id = newId,
-            Login = Login!,
-            Password = Password!
-        };
-        _dataContext.People.Add(newUser);
-        await _dataContext.SaveChangesAsync();
-        var window = new MainWindow();
-        window.Show();
-        OnRequestClose();
+            Status = $"Ошибка: {ex.Message}";
+        }
     }
     #region INotifyPropertyChanged
 
