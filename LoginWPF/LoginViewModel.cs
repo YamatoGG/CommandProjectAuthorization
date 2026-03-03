@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
@@ -49,9 +50,11 @@ public class LoginViewModel : INotifyPropertyChanged
     private async Task LoginAsync()
     {
         Status = null;
+        var loginData = new Person() { Login = Login!, Password = Password! };
         var json = JsonSerializer.Serialize(loginData);
         try
         {
+            var response = await _httpClient.PostAsJsonAsync("/login", json);
             if (response.IsSuccessStatusCode)
             {
                 var responseBody = await response.Content.ReadAsStringAsync();
@@ -73,9 +76,11 @@ public class LoginViewModel : INotifyPropertyChanged
     private async Task RegisterAsync()
     {
         Status = null;
+        var loginData = new Person() { Login = Login!, Password = Password! };
         var json = JsonSerializer.Serialize(loginData);
         try
         {
+            var response = await _httpClient.PostAsJsonAsync("/register", json);
             if (response.IsSuccessStatusCode)
             {
                 var responseBody = await response.Content.ReadAsStringAsync();
