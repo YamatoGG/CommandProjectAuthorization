@@ -1,0 +1,22 @@
+@WebBaza_HostAddress = http://localhost:5196
+
+GET {{WebBaza_HostAddress}}/products
+Accept: application/json
+
+###
+
+POST {{WebBaza_HostAddress}}/register
+Content-Type: application/json
+{
+  "login": "sergey",
+  "password": "slojinyparol"
+}
+###
+
+POST {{WebBaza_HostAddress}}/login
+Content-Type: application/json
+{
+  "login": "sergey",
+  "password": "slojinyparol"
+}
+###
