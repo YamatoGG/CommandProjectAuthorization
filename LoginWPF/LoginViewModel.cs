@@ -8,6 +8,7 @@ using System.Windows.Input;
 using Microsoft.EntityFrameworkCore;
 using WebBaza;
 using WebBaza.Classes;
+using WpfApp3.Views;
 
 namespace LoginWPF;
 
@@ -54,7 +55,7 @@ public class LoginViewModel : INotifyPropertyChanged
             var response = await _httpClient.PostAsJsonAsync("/login", loginData);
             if (response.IsSuccessStatusCode)
             {
-                var window = new MainWindow();
+                var window = new ProductsWindow();
                 window.Show();
                 OnRequestClose();
             }
@@ -77,7 +78,7 @@ public class LoginViewModel : INotifyPropertyChanged
             var response = await _httpClient.PostAsJsonAsync("/register", loginData);
             if (response.IsSuccessStatusCode)
             {
-                var window = new MainWindow();
+                var window = new ProductsWindow();
                 window.Show();
                 OnRequestClose();
             }

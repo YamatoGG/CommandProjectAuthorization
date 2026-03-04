@@ -14,6 +14,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\WebBaza\WebBaza.csproj" />
+      <ProjectReference Include="..\WpfApp3\WpfApp3\WpfApp3.csproj" />
     </ItemGroup>
 
 </Project>
