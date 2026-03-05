@@ -11,7 +11,7 @@ namespace WpfApp3.Services
 	{
 		private readonly HttpClient _httpClient;
 	
-		private readonly string _baseUrl = "http://localhost:5000"; // Нужно поменять !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		private readonly string _baseUrl = "http://localhost:5196";
 
 		public ApiService()
 		{
@@ -25,7 +25,7 @@ namespace WpfApp3.Services
 			try
 			{
 				
-				HttpResponseMessage response = await _httpClient.GetAsync("products");
+				HttpResponseMessage response = await _httpClient.GetAsync("/products");
 
 				if (response.IsSuccessStatusCode)
 				{
